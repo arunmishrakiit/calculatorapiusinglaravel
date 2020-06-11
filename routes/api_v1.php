@@ -15,10 +15,10 @@ Use App\Calculator;
 */
  
 Route::post('add', 'API\v1\CalculatorController@add');
-Route::post('subtract', 'API\v1\CalculatorController@subtract');
-Route::post('multiplication', 'API\v1\CalculatorController@multiplication');
-Route::post('division', 'API\v1\CalculatorController@division');
-Route::post('square', 'API\v1\CalculatorController@square');
+Route::post('substract', 'API\v1\CalculatorController@substract');
+Route::post('multiply', 'API\v1\CalculatorController@multiply');
+Route::post('divide', 'API\v1\CalculatorController@divide');
+Route::post('squareRoot', 'API\v1\CalculatorController@squareRoot');
 Route::post('save', 'API\v1\CalculatorController@save');
 Route::get('savedValue', 'API\v1\CalculatorController@savedValue');
 Route::post('clear', 'API\v1\CalculatorController@clear');

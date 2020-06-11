@@ -3,54 +3,161 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator as FacadesValidator;
 use App\Calculator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Http\Requests\ValidateInput;
+
+/**
+ * CalculatorController Class 
+ *
+ * CalculatorController contains calculator operation
+ *
+ * @version    Release: 1.0
+ * @author Arun Kumar <arunmishrakiit@gmail.com>
+ */
 
 class CalculatorController extends Controller
 {
+    public $v;
+    public function __construct()
+    {
+        $this->v = new ValidateInput();
+    }
+
+    /**
+     *
+     * Add two number
+     *
+     * @param    object  $request The Request
+     * @author Arun Kumar <arunmishrakiit@gmail.com>
+     * @return      json
+     *
+     */
+
     public function add(Request $request){
-        $validationRules = array( 
-            'num1' => 'required|numeric|gt:0',
-            'num2' => 'required|numeric|gt:0',
-        );
-        $validator = FacadesValidator::make($request->all(), $validationRules);
-        if(!$validator->fails()) {
+        if($this->v->validateReqs($request)) {
             return response()->json(['answer' => $request->input('num1') + $request->input('num2')]);  
         } else {
             return response()->json(['error' => 'num1 and num2 must be a valid numbers.']);
         }
     }
 
-    public function subtract(Request $request){
-        return response()->json(['answer' => $request->input('num1') - $request->input('num2')]);
+    /**
+     *
+     * Substract number
+     *
+     * @param    object  $request The Request
+     * @author Arun Kumar <arunmishrakiit@gmail.com>
+     * @return      json
+     *
+     */
+
+    public function substract(Request $request){
+        if($this->v->validateReqs($request)) {
+            return response()->json(['answer' => $request->input('num1') - $request->input('num2')]);
+        } else {
+            return response()->json(['error' => 'num1 and num2 must be a valid numbers.']);
+        }
     }
 
-    public function multiplication(Request $request){
-        return response()->json(['answer' => $request->input('num1') * $request->input('num2')]);
+    /**
+     *
+     * Multiply
+     *
+     * @param    object  $request The Request
+     * @author Arun Kumar <arunmishrakiit@gmail.com>
+     * @return      json
+     *
+     */
+
+    public function multiply(Request $request){
+        if($this->v->validateReqs($request)) {
+            return response()->json(['answer' => $request->input('num1') * $request->input('num2')]);
+        } else {
+            return response()->json(['error' => 'num1 and num2 must be a valid numbers.']);
+        }
     }
 
-    public function division(Request $request){
-        return response()->json(['answer' => $request->input('num1') / $request->input('num2')]);
+    /**
+     *
+     * Division
+     *
+     * @param    object  $request The Request
+     * @author Arun Kumar <arunmishrakiit@gmail.com>
+     * @return      json
+     *
+     */
+
+    public function divide(Request $request){
+        if($this->v->validateReqs($request)) {
+            return response()->json(['answer' => $request->input('num1') / $request->input('num2')]);
+        } else {
+            return response()->json(['error' => 'num1 and num2 must be a valid numbers.']);
+        }
     }
 
-    public function square(Request $request){
-        return response()->json(['answer' => $request->input('num1') * $request->input('num1')]);
+    /**
+     *
+     * Square
+     *
+     * @param    object  $request The Request
+     * @author Arun Kumar <arunmishrakiit@gmail.com>
+     * @return      json
+     *
+     */
+
+    public function squareRoot(Request $request){
+        if($this->v->validateReqs($request,1)) {
+            return response()->json(['answer' => $request->input('num1') * $request->input('num1')]);
+        } else {
+            return response()->json(['error' => 'num1 must be a valid number.']);
+        }
     }
+
+    /**
+     *
+     * Save
+     *
+     * @param    object  $request The Request
+     * @return      json
+     *
+     */
 
     public function save(Request $request){
-        DB::table('calculators')->where('value','>=',0)->delete();
-        DB::table('calculators')->insert($request->all());
-        return response()->json(['save' => true]);
+        if($this->v->validateReqs($request,2)) {
+            DB::table('calculators')->where('value','>=',0)->delete();
+            DB::table('calculators')->insert($request->all());
+            return response()->json(['save' => true]);
+        } else {
+            return response()->json(['error' => 'value must be a valid number.']);
+        }
     }
+
+    /**
+     *
+     * Retrieve
+     *
+     * @param       void
+     * @return      json
+     *
+     */
 
     public function savedValue(){
         $savedVal = DB::table('calculators')->select('value')->get()->first();
         return response()->json($savedVal);
     }
 
-    public function clear(Request $request){
+    /**
+     *
+     * Clear
+     *
+     * @param    void
+     * @return      json
+     *
+     */
+
+    public function clear(){
         DB::table('calculators')->where('value','>=',0)->delete();
         return response()->json(['value' => null]);
     }
