@@ -9,18 +9,12 @@ use Tests\TestCase;
 
 class CalculatorTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-
     public function testRequiresNum1AndNum2()
     {
-        $this->json('POST', 'api/v1/add',['num1' => 4, 'num2' => ''])
-            ->assertStatus(200)
+        $this->json('POST', 'api/v1/add', ['num1' => 4, 'num2' => ''])
+            ->assertStatus(422)
             ->assertJson([
-                'error' => 'num1 and num2 must be a valid numbers.'
+                'error' => 'only num1 and num2 are required and must be a valid numbers.'
             ]);
     }
 
@@ -44,7 +38,7 @@ class CalculatorTest extends TestCase
             ->assertStatus(200)
             ->assertJson(['answer' => 8]);
     }
-    
+
     public function testDivideSuccessfully()
     {
         $this->json('POST', 'api/v1/divide', ['num1' => 4, 'num2' => 2])
@@ -62,21 +56,21 @@ class CalculatorTest extends TestCase
     public function testSaveSuccessfully()
     {
         $this->json('POST', 'api/v1/save', ['value' => 40])
-            ->assertStatus(200)
+            ->assertStatus(201)
             ->assertJson(['save' => true]);
     }
 
     public function testRetrieveSuccessfully()
     {
-        $this->json('GET', 'api/v1/savedValue',[])
+        $this->json('GET', 'api/v1/savedValue', [])
             ->assertStatus(200)
             ->assertJson(['value' => 40]);
     }
 
     public function testClearSuccessfully()
     {
-        $this->json('POST', 'api/v1/clear',[])
-            ->assertStatus(200)
+        $this->json('POST', 'api/v1/clear', [])
+            ->assertStatus(205)
             ->assertJson(['value' => null]);
     }
 }

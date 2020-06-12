@@ -25,8 +25,8 @@ class ValidateInput extends FormRequest
             ];
         } else{
             return [
-                'num1' => 'required|numeric|gt:0',
-                'num2' => 'required|numeric|gt:0',
+                'num1' => 'required|numeric|gte:0',
+                'num2' => 'required|numeric|gte:0',
             ];
         }
     }
@@ -39,6 +39,12 @@ class ValidateInput extends FormRequest
 
     public function validateReqs($request, $flag=0)
     {
+        if(count($request->all())!=2 && $flag==0){
+            return false;
+        }
+        if(count($request->all())!=1 && $flag>0){
+            return false;
+        }
         $validator = FacadesValidator::make($request->all(), $this->rules($flag));
         if(!$validator->fails()) {
             return true; 

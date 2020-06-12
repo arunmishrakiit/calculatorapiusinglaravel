@@ -39,7 +39,7 @@ class CalculatorController extends Controller
         if($this->v->validateReqs($request)) {
             return response()->json(['answer' => $request->input('num1') + $request->input('num2')]);  
         } else {
-            return response()->json(['error' => 'num1 and num2 must be a valid numbers.']);
+            return response()->json(['error' => 'only num1 and num2 are required and must be a valid numbers.'],422);
         }
     }
 
@@ -57,7 +57,7 @@ class CalculatorController extends Controller
         if($this->v->validateReqs($request)) {
             return response()->json(['answer' => $request->input('num1') - $request->input('num2')]);
         } else {
-            return response()->json(['error' => 'num1 and num2 must be a valid numbers.']);
+            return response()->json(['error' => 'only num1 and num2 are required and must be a valid numbers.'],422);
         }
     }
 
@@ -75,7 +75,7 @@ class CalculatorController extends Controller
         if($this->v->validateReqs($request)) {
             return response()->json(['answer' => $request->input('num1') * $request->input('num2')]);
         } else {
-            return response()->json(['error' => 'num1 and num2 must be a valid numbers.']);
+            return response()->json(['error' => 'only num1 and num2 are required and must be a valid numbers.'],422);
         }
     }
 
@@ -91,9 +91,13 @@ class CalculatorController extends Controller
 
     public function divide(Request $request){
         if($this->v->validateReqs($request)) {
+            if($request->input('num2') == 0){
+                return response()->json(['answer' => 'Infinite']);
+            }
             return response()->json(['answer' => $request->input('num1') / $request->input('num2')]);
+            
         } else {
-            return response()->json(['error' => 'num1 and num2 must be a valid numbers.']);
+            return response()->json(['error' => 'only num1 and num2 are required and must be a valid numbers.'],422);
         }
     }
 
@@ -111,7 +115,7 @@ class CalculatorController extends Controller
         if($this->v->validateReqs($request,1)) {
             return response()->json(['answer' => $request->input('num1') * $request->input('num1')]);
         } else {
-            return response()->json(['error' => 'num1 must be a valid number.']);
+            return response()->json(['error' => 'only num1 is required and must be a valid number.'],422);
         }
     }
 
@@ -128,9 +132,9 @@ class CalculatorController extends Controller
         if($this->v->validateReqs($request,2)) {
             DB::table('calculators')->where('value','>=',0)->delete();
             DB::table('calculators')->insert($request->all());
-            return response()->json(['save' => true]);
+            return response()->json(['save' => true],201);
         } else {
-            return response()->json(['error' => 'value must be a valid number.']);
+            return response()->json(['error' => 'only value is required and must be a valid number.'],422);
         }
     }
 
@@ -159,6 +163,6 @@ class CalculatorController extends Controller
 
     public function clear(){
         DB::table('calculators')->where('value','>=',0)->delete();
-        return response()->json(['value' => null]);
+        return response()->json(['value' => null],205);
     }
 }
